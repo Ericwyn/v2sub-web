@@ -7,8 +7,10 @@
     <meta name="force-rendering" content="webkit"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
 
-    <link rel="stylesheet" href="/css/mdui.css"/>
-<!--    <link-->
+    <link rel="stylesheet" href="css/mdui.css"/>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+
+    <!--    <link-->
 <!--            rel="stylesheet"-->
 <!--            href="https://cdn.jsdelivr.net/npm/mdui@1.0.1/dist/css/mdui.min.css"-->
 <!--            integrity="sha384-cLRrMq39HOZdvE0j6yBojO4+1PrHfB7a9l5qLcmRm/fiWXYY+CndJPmyu5FV/9Tw"-->
@@ -19,6 +21,19 @@
             height: 100%;
 
         }
+
+        .loadingPage{
+            position: fixed;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            background-color: rgba(255,255,255, 1);
+            z-index:998;
+
+            /*display:block;*/
+        }
+
         .text-auto-wrap {
             word-break:normal;
             width:auto;
@@ -29,96 +44,370 @@
             white-space:normal
             /*word-wrap:break-word*/
         }
+
+        .car-title-icon {
+            font-size: 26px;
+            margin-bottom: 4px;
+        }
+        
+        .card-group {
+            margin-top: 25px;
+            margin-bottom:50px
+        }
+
+        .card-group-name {
+            margin-left: 10px;
+            font-size: 26px;
+        }
+
+        .card-style {
+            margin-top: 10px;
+            margin-right: 10px;
+        }
+
+        .card-content-panel {
+            padding-left: 14px;padding-right: 14px;
+        }
+
+        .car-context-panel-control {
+            min-height: 135px;
+        }
+
+        .card-content-panel-title {
+            font-size: 18px; font-weight: bold
+        }
+
+        .card-content-panel-key {
+            font-weight: bold;
+            margin-right: 5px;
+        }
+
     </style>
     <title>v2sub 管理</title>
 </head>
 <body>
+<div id="page">
 
-<div class="mdui-appbar">
-    <div class="mdui-toolbar mdui-color-theme">
-        <a href="javascript:;" class="mdui-typo-headline">V2Sub Web 管理</a>
-        <a href="javascript:;" class="mdui-typo-title"></a>
-        <div class="mdui-toolbar-spacer"></div>
-
+    <!-- 全屏 loading 页 -->
+    <div class="loadingPage mdui-valign"
+         v-if="showLoadingPage">
+        <div class="mdui-center" style="text-align: center">
+            <div class="mdui-spinner mdui-spinner-colorful "></div>
+            <br><br><br>
+            <div>正在载入...</div>
+        </div>
     </div>
-</div>
 
-<div class="mdui-container" style="min-height: calc(100vh - 200px);">
-
-<!--    <div class="mdui-card mdui-m-t-4">-->
-<!--        <div class="mdui-card-actions mdui-card-actions-stacked mdui-m-t-1 mdui-m-b-1">-->
-
-<!--            <div class="mdui-chip mdui-color-blue mdui-text-color-white" >-->
-<!--                <span class="mdui-chip-title">主页</span>-->
-<!--            </div>-->
-
-<!--        </div>-->
-<!--    </div>-->
-
-    <div class="mdui-m-y-2 ">
-<!--        <div class="mdui-typo-title">运行状态:</div>-->
-<!--        <div class="mdui-typo-body-2">正在运行</div>-->
-        <div class="mdui-card">
-
-            <!-- 卡片的标题和副标题 -->
-            <div class="mdui-card-primary">
-
-                <div class="mdui-card-primary-title">
-                    <i class="mdui-icon material-icons mdui-text-color-green" style="font-size: 26px;margin-bottom: 4px;">
-                        data_usage
+    <div v-else>
+        <div class="mdui-appbar">
+            <div class="mdui-toolbar mdui-color-theme">
+                <a href="javascript:;" class="mdui-typo-headline">V2Sub Web 管理</a>
+                <a href="javascript:;" class="mdui-typo-title"></a>
+                <div class="mdui-toolbar-spacer"></div>
+                <a  class="mdui-btn mdui-btn-icon"
+                    mdui-menu="{target: '#menu-admin-setting',position: 'bottom',covered:true,subMenuDelay:50}">
+                    <i class="mdui-icon material-icons mdui-color-theme-accent">
+                        menu
                     </i>
-                    当前状态
-                </div>
-                <div>
-<!--                    <i class="mdui-icon material-icons" style="font-size: 16px;">data_usage</i>-->
-                    <span class="mdui-card-primary-subtitle" style="display: inline;">
-                        服务已启动
-                    </span>
-                </div>
+                </a>
+                <ul class="mdui-menu" id="menu-admin-setting">
+                    <li class="mdui-menu-item">
+                        <a class="mdui-ripple" onclick="showServerConfigDialog()">修改设置</a>
+                    </li>
+                </ul>
             </div>
+        </div>
 
-            <!-- 卡片的内容 -->
-<!--            <div class="mdui-card-content">子曰：「学而时习之，不亦说乎？有朋自远方来，不亦乐乎？人不知，而不愠，不亦君子乎？」</div>-->
+        <div class="mdui-container"
+             style="min-height: calc(100vh - 200px);">
+            <div class="mdui-row mdui-m-y-2">
+                <div class="mdui-col-xs-0  mdui-col-sm-2"></div>
+                <div class="mdui-col-xs-12 mdui-col-sm-8">
 
-            <!-- 卡片的按钮 -->
-            <div class="mdui-card-actions">
-                <button class="mdui-btn mdui-ripple mdui-color-blue mdui-text-color-white">启动</button>
-                <button class="mdui-btn mdui-ripple mdui-color-pink mdui-text-color-white">停止</button>
-                <button class="mdui-btn mdui-ripple mdui-color-grey mdui-float-right mdui-text-color-white">日志查看</button>
+                    <div class="card-group">
+                        <!-- 分类名称 -->
+                        <div class="card-group-name">系统控制</div>
+                        <!-- 卡片列表 -->
+                        <div class="mdui-row">
+                            <!-- 小屏幕一个卡片占12，中屏幕一个卡片占6 大屏幕一个卡片占4 -->
+                            <div class="mdui-col-xs-12 mdui-col-sm-6 mdui-col-md-6">
+                                <div class="mdui-card card-style ">
+                                    <div class="card-content-panel car-context-panel-control">
+                                        <p class="card-content-panel-title">
+                                            状态查看
+                                        </p>
+                                        <p><span class="card-content-panel-key">当前状态:</span>{{systemStatus.status ? systemStatus.status : "未知"}}</p>
+                                        <!--                                    <p><span class="card-content-panel-key">当前节点:</span>{{systemStatus.serverId ? systemStatus.serverId : "未知"}}</p>-->
+                                        <p><span class="card-content-panel-key">上次启动:</span>{{systemStatus.lastStartTime ? systemStatus.lastStartTime: "未知"}}</p>
+                                        <!--                                    <p><span class="card-content-panel-key">运行时间:</span>{{systemStatus.runningTime ? systemStatus.runningTime : "未知"}}</p>-->
+                                    </div>
+                                    <div class="mdui-card-actions">
+                                        <button class="mdui-btn mdui-ripple mdui-color-blue mdui-text-color-white" v-on:click="startConn()">启动</button>
+                                        <button class="mdui-btn mdui-ripple mdui-color-pink mdui-text-color-white" v-on:click="stopConn()">停止</button>
+                                        <button class="mdui-btn mdui-ripple mdui-color-grey mdui-float-right mdui-text-color-white" v-on:click="gotoLogPage()">日志查看</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mdui-col-xs-12 mdui-col-sm-6 mdui-col-md-6">
+                                <div class="mdui-card card-style ">
+                                    <div class="card-content-panel car-context-panel-control">
+                                        <p class="card-content-panel-title">
+                                            系统配置
+                                        </p>
+                                        <p><span class="card-content-panel-key">Http 端口:</span>{{systemConfig.hPort ? systemConfig.hPort : "未知"}}</p>
+                                        <p><span class="card-content-panel-key">Socks 端口:</span>{{systemConfig.sPort ? systemConfig.sPort : "未知"}}</p>
+                                        <p><span class="card-content-panel-key">局域网连接:</span>{{systemConfig.lConn != null ? systemConfig.lConn : "未知"}}</p>
+                                    </div>
+                                    <div class="mdui-card-actions">
+                                        <button class="mdui-btn mdui-ripple mdui-color-blue mdui-text-color-white">配置修改</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="card-group">
+                        <!-- 分类名称 -->
+                        <div class="card-group-name">订阅管理</div>
+                        <!-- 卡片列表 -->
+                        <div class="mdui-row">
+                            <!-- 小屏幕一个卡片占12，中屏幕一个卡片占6 大屏幕一个卡片占4 -->
+                            <div class="mdui-col-xs-12 mdui-col-sm-6 mdui-col-md-6" v-for="(sub, index) in subList">
+                                <div class="mdui-card card-style ">
+                                    <div class="card-content-panel" style="">
+                                        <p class="card-content-panel-title">
+                                            订阅 {{index}}
+                                        </p>
+                                        <p><span class="card-content-panel-key">名称:</span>{{sub.name}}</p>
+                                    </div>
+                                    <div class="mdui-card-actions">
+                                        <button class="mdui-btn mdui-ripple mdui-color-blue mdui-text-color-white" v-on:click="showSubAddress(index)">地址查看</button>
+                                        <button class="mdui-btn mdui-ripple mdui-color-blue mdui-text-color-white">订阅更新</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="card-group">
+                        <!-- 分类名称 -->
+                        <div class="card-group-name">节点管理</div>
+                        <!-- 卡片列表 -->
+                        <div class="mdui-row">
+                            <!-- 小屏幕一个卡片占12，中屏幕一个卡片占6 大屏幕一个卡片占4 -->
+                            <div class="mdui-col-xs-12 mdui-col-sm-6 mdui-col-md-6" v-for="(server, index) in serverList">
+                                <div class="mdui-card card-style ">
+                                    <div class="card-content-panel" style="">
+                                        <p class="card-content-panel-title">
+                                            节点 {{index}}
+                                        </p>
+                                        <p><span class="card-content-panel-key">别名:</span>{{server.ps}}</p>
+                                        <p><span class="card-content-panel-key">地址:</span>{{server.add}}</p>
+                                        <p><span class="card-content-panel-key">端口:</span>{{server.port}}</p>
+                                        <p><span class="card-content-panel-key">类型:</span>{{server.net}}</p>
+
+                                    </div>
+                                    <div class="mdui-card-actions">
+                                        <button class="mdui-btn mdui-ripple mdui-color-blue mdui-text-color-white">选用</button>
+                                        <button class="mdui-btn mdui-ripple mdui-color-blue mdui-text-color-white">测速</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="mdui-col-xs-0  mdui-col-sm-2"></div>
             </div>
 
         </div>
 
+        <div class="doc-footer-nav mdui-color-white mdui-p-t-2 mdui-p-b-1" style="height: 40px">
+            <div class="mdui-center mdui-text-center ">
+                <p class="mdui-center" style="font-size: 14px;">
+                    Power by <a href="https://github.com/Ericwyn/V2sub" style="font-weight: bold;">V2sub @Ericwyn</a>
+                </p>
+            </div>
+        </div>
+
     </div>
 
+
+
 </div>
-
-<div class="doc-footer-nav mdui-color-white mdui-p-t-2 mdui-p-b-1" style="height: 40px">
-    <div class="mdui-center mdui-text-center ">
-        <p class="mdui-center" style="font-size: 14px;">
-            Power by <a href="https://github.com/Ericwyn/V2sub" style="font-weight: bold;">V2sub @Ericwyn</a>
-        </p>
-    </div>
-</div>
-
-
 </body>
-<script type="text/javascript" src="/js/mdui.js"></script>
-<!--<script-->
-<!--        src="https://cdn.jsdelivr.net/npm/mdui@1.0.1/dist/js/mdui.min.js"-->
-<!--        integrity="sha384-gCMZcshYKOGRX9r6wbDrvF+TcCCswSHFucUzUPwka+Gr+uHgjlYvkABr95TCOz3A"-->
-<!--        crossorigin="anonymous"-->
-<!--&gt;</script>-->
-<script type="text/javascript" src="/js/andex.js"></script>
-<!--普通用户JS-->
+<script type="text/javascript" src="js/mdui.js"></script>
+<script type="text/javascript" src="js/v2subw.js"></script>
 <script>
-    function headBtnClick(){
+
+    let pageDate = {
+
+        showLoadingPage: true,
+
+        loadingStatus: false,
+        loadingConfig: false,
+        loadingSubs: false,
+        loadingServers: false,
+
+        systemStatus: {
+            status: null,
+            serverId: null,
+            lastStartTime: null,
+            runningTime: null,
+        },
+
+        systemConfig: {
+            hPort: null,
+            sPort: null,
+            lConn : null,
+            serverIndex: null,
+        },
+
+        subList : [
+
+        ],
+
+        serverList: [
+
+        ],
+
+    }
+
+
+
+    let app = new Vue({
+        el: '#page',
+        data: pageDate,
+        methods: {
+            gotoLogPage: function (){
+                window.open("logs.html", "_blank");
+            },
+
+            startConn: function (){
+                if(pageDate.systemStatus.status === "正在运行") {
+                    // 含回调
+                    mdui.alert('当前服务已启动', '服务控制', function(){
+                        // mdui.alert('点击了确认按钮');
+                    });
+                } else {
+                    apiConnStart(function (){
+                        mdui.alert('服务启动成功', '服务控制', function(){
+                            console.log("重新载入页面")
+                            location.reload()
+                        });
+                    })
+                }
+            },
+
+            stopConn: function (){
+                apiConnStop(function (){
+                    mdui.alert('服务停止成功', '服务控制', function(){
+                        console.log("重新载入页面")
+                        location.reload()
+                    });
+                })
+            },
+
+            showSubAddress: function (index) {
+                console.log("查看订阅地址: index" + index)
+                mdui.dialog({
+                    title: '订阅地址',
+                    content: `
+                        <div class="">名称: ${pageDate.subList[index].name}</div>
+                        <div class="mdui-textfield">
+                          <textarea wrap="off"  class="mdui-textfield-input" rows="4" placeholder="Message">${pageDate.subList[index].url}</textarea>
+                        </div>
+                    `,
+                    buttons: [
+                        {
+                            text: '返回'
+                        }
+                    ]
+                });
+            },
+
+
+        }
+    })
+
+    function loadMsg(){
+        // 载入服务器状态
+        apiGetSystemMsg(function (json) {
+            // console.log(json)
+            if (json.running === "true") {
+                pageDate.systemStatus.status = "正在运行"
+            } else {
+                pageDate.systemStatus.status = "停止"
+            }
+
+            if(json.lastStartTimeUnix !== 0){
+                let  unixTimestamp = new Date(json.lastStartTimeUnix* 1000);
+                // alert( "普通时间为：" +commonTime);
+                pageDate.systemStatus.lastStartTime = unixTimestamp.toLocaleString();
+            }
+            pageDate.loadingStatus = true
+            pageDate.showLoadingPage = !(pageDate.loadingStatus && pageDate.loadingSubs
+                && pageDate.loadingServers && pageDate.loadingConfig)
+        })
+
+        // 载入节点配置
+        apiGetServerList(function (msg) {
+            let json = JSON.parse(msg)
+            console.log(json)
+
+            if(json.ServerList) {
+                json.ServerList.forEach(server => {
+                    pageDate.serverList.push(server.Vmess)
+                })
+                pageDate.loadingServers = true;
+                pageDate.showLoadingPage = !(pageDate.loadingStatus && pageDate.loadingSubs
+                    && pageDate.loadingServers && pageDate.loadingConfig)
+            }
+
+            if(json.SocksPort !== undefined
+                && json.HttpPort !== undefined
+                && json.AllowLocalConnect !== undefined) {
+                pageDate.systemConfig.sPort = json.SocksPort;
+                pageDate.systemConfig.hPort = json.HttpPort;
+                pageDate.systemConfig.lConn = json.AllowLocalConnect;
+                pageDate.systemConfig.serverIndex = json.Id
+                pageDate.loadingConfig = true;
+                pageDate.showLoadingPage = !(pageDate.loadingStatus && pageDate.loadingSubs
+                    && pageDate.loadingServers && pageDate.loadingConfig)
+            }
+        })
+
+
+        // 载入订阅配置
+        apiGetSubsList(function (msg) {
+            let json = JSON.parse(msg)
+            for(let key in json) {
+                if(json[key].SubName) {
+                    pageDate.subList.push({
+                        name: json[key].SubName,
+                        url: json[key].SubUrl
+                    })
+                }
+            }
+            pageDate.loadingSubs = true
+            pageDate.showLoadingPage = !(pageDate.loadingStatus && pageDate.loadingSubs
+                && pageDate.loadingServers && pageDate.loadingConfig)
+        })
+
+    }
+
+    // 展示一个服务地址配置 dialog
+    function showServerConfigDialog(){
+        let server = localStorage.getItem("host")
         mdui.dialog({
-            title: '管理员登录',
+            title: '初始配置',
             content: `
-                    <div class="">需要输入管理员密码才可进入管理页面</div>
+                    <div class="">请配置 V2sub-W 的运行地址</div>
                     <div class="mdui-textfield">
-                        <input autocomplete="off" class="mdui-textfield-input" id="pw" type="password" placeholder="请输入管理员密码"/>
+                        <input autocomplete="off" id="host" class="mdui-textfield-input" type="text" placeholder="http://... 或 https://..." value="${server != null ? server : ""}"/>
                     </div>
                 `,
             buttons: [
@@ -128,30 +417,26 @@
                 {
                     text: '确认',
                     onClick: function(){
-                        AJAX({
-                            url: "adminLogin",
-                            method: AJAX_METHOD.POST,
-                            json: {
-                                password: document.getElementById("pw").value
-                            },
-                            success: function (res){
-                                let resJson = JSON.parse(res)
-                                console.log(resJson)
-                                if (resJson.code !== "1000") {
-                                    mdui.alert(resJson.msg);
-                                } else {
-                                    window.location.reload();
-                                }
-                            },
-                            fail: function (){
-                                mdui.alert("管理员密码错误");
-                            }
-                        })
+                        let host = document.getElementById("host").value;
+                        localStorage.setItem("host", host)
+                        console.log("刷新页面")
+                        location.reload()
                     }
                 }
             ]
         });
-    }
-</script>
 
+    }
+
+    function reloadPage(){
+        window.location.replace(window.location.href)
+    }
+
+    if(localStorage.getItem("host") && localStorage.getItem("host").trim() != null) {
+        loadMsg()
+    } else {
+        showServerConfigDialog()
+    }
+
+</script>
 </html>
