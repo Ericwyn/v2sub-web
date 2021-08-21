@@ -110,6 +110,29 @@ function setGetSystemConfig(key, value, callback) {
 }
 
 
+function apiConnRestart(callback) {
+    getServerHost(function (host){
+            AJAX({
+                url: host + apiStart + "/v2sub/conn/restart",
+                method: AJAX_METHOD.GET,
+                success: function (json){
+                    json = JSON.parse(json)
+                    if (json.code === "1000") {
+                        // console.log(json)
+                        callback(json.msg)
+                    } else {
+                        handleErrorJson(json)
+                    }
+                }
+            })
+        },
+        function (){
+            console.log("无法获取服务器地址")
+        }
+    )
+}
+
+
 function apiConnStart(callback) {
     getServerHost(function (host){
             AJAX({
@@ -224,7 +247,7 @@ function log(...msg){
 }
 
 function handleErrorJson(json) {
-    alert("请求错误: " + json.code)
+    mdui.alert("请求错误: " + json.code)
 }
 
 const AJAX_METHOD = {

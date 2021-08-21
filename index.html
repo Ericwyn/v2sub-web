@@ -142,7 +142,7 @@
                                         <!--                                    <p><span class="card-content-panel-key">运行时间:</span>{{systemStatus.runningTime ? systemStatus.runningTime : "未知"}}</p>-->
                                     </div>
                                     <div class="mdui-card-actions">
-                                        <button class="mdui-btn mdui-ripple mdui-color-blue mdui-text-color-white" v-on:click="startConn()">启动</button>
+                                        <button class="mdui-btn mdui-ripple mdui-color-blue mdui-text-color-white" v-on:click="startConn()">启动/重启</button>
                                         <button class="mdui-btn mdui-ripple mdui-color-pink mdui-text-color-white" v-on:click="stopConn()">停止</button>
                                         <button class="mdui-btn mdui-ripple mdui-color-grey mdui-float-right mdui-text-color-white" v-on:click="gotoLogPage()">日志查看</button>
                                     </div>
@@ -288,15 +288,17 @@
 
             startConn: function (){
                 if(pageDate.systemStatus.status === "正在运行") {
-                    // 含回调
-                    mdui.alert('当前服务已启动', '服务控制', function(){
-                        // mdui.alert('点击了确认按钮');
-                    });
+                    apiConnRestart(function (){
+                        mdui.alert('服务重启成功', '服务控制', function(){
+                            console.log("重新载入页面")
+                            reloadPage()
+                        });
+                    })
                 } else {
                     apiConnStart(function (){
                         mdui.alert('服务启动成功', '服务控制', function(){
                             console.log("重新载入页面")
-                            location.reload()
+                            reloadPage()
                         });
                     })
                 }
@@ -306,7 +308,7 @@
                 apiConnStop(function (){
                     mdui.alert('服务停止成功', '服务控制', function(){
                         console.log("重新载入页面")
-                        location.reload()
+                        reloadPage()
                     });
                 })
             },
@@ -420,7 +422,7 @@
                         let host = document.getElementById("host").value;
                         localStorage.setItem("host", host)
                         console.log("刷新页面")
-                        location.reload()
+                        reloadPage()
                     }
                 }
             ]
@@ -429,7 +431,9 @@
     }
 
     function reloadPage(){
-        window.location.replace(window.location.href)
+        setTimeout(function (){
+            window.location.replace(window.location.href)
+        }, 200);
     }
 
     if(localStorage.getItem("host") && localStorage.getItem("host").trim() != null) {
