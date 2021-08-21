@@ -10,10 +10,6 @@
 
 <img src="screenshot/s-1.png" alt="s-1" style="width:900px" />
 
-- 手机控制
-
-<img src="screenshot/s-2.jpg" alt="s-1" style="width:400px" />
-
 
 ## 支持操作
  - 接口登录 TODO
