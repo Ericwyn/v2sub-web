@@ -224,11 +224,28 @@ function apiGetServerList(callback) {
     )
 }
 
-// 获取系统服务配置
-function apiGetV2rayLog(callback) {
+// 获取 V2sub conn 的日志
+function apiGetConnLog(callback) {
     getServerHost(function (host){
             AJAX({
                 url: host + apiStart + "/v2sub/conn/log",
+                method: AJAX_METHOD.GET,
+                success: function (log){
+                    callback(log)
+                }
+            })
+        },
+        function (){
+            console.log("无法获取服务器地址")
+        }
+    )
+}
+
+// 清除 V2sub conn 的日志
+function apiRemoveConnLog(callback) {
+    getServerHost(function (host){
+            AJAX({
+                url: host + apiStart + "/v2sub/conn/clearLog",
                 method: AJAX_METHOD.GET,
                 success: function (log){
                     callback(log)

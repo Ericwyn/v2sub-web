@@ -447,7 +447,9 @@
                         let host = document.getElementById("host").value;
                         localStorage.setItem("host", host)
                         console.log("刷新页面")
-                        reloadPage()
+                        setTimeout(function (){
+                            window.location.replace(window.location.origin + window.location.pathname)
+                        }, 200);
                     }
                 }
             ]
@@ -456,7 +458,7 @@
 
     function reloadPage(){
         setTimeout(function (){
-            window.location.replace(window.location.href)
+            window.location.replace(window.location.origin + window.location.pathname)
         }, 200);
     }
 

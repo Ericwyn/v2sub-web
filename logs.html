@@ -98,7 +98,15 @@
         </div>
     </div>
 
-    <div v-else style="white-space: nowrap;">
+    <div v-else style="white-space: nowrap;" class="mdui-m-l-2">
+
+        <br>
+        <button class="mdui-btn mdui-ripple mdui-color-blue mdui-text-color-white" v-on:click="updateLog">刷新日志</button>
+        <button class="mdui-btn mdui-ripple mdui-color-blue mdui-color-pink" v-on:click="clearConnLog">清除日志</button>
+        <button class="mdui-btn mdui-ripple mdui-color-blue mdui-text-color-white mdui-m-l-4" v-on:click="goHome">返回主页</button>
+
+        <br><br>
+
         <div v-for="log in logs">
             <div>{{log}}</div>
         </div>
@@ -121,13 +129,48 @@
     let app = new Vue({
         el: '#page',
         data: pageDate,
+        methods: {
+            clearConnLog: function (){
+                apiRemoveConnLog(function (res){
+                    mdui.dialog({
+                        title: '日志清除',
+                        content: `<p>操作成功!</p>`,
+                        buttons: [
+                            {
+                                text: '刷新页面',
+                                onClick: function(){
+                                    setTimeout(function (){
+                                        window.location.replace(window.location.href)
+                                    }, 200);
+                                }
+                            }
+                        ]
+                    });
+
+                });
+            },
+
+            updateLog: function (){
+                apiGetConnLog(function (log){
+                    log = log.trim()
+                    pageDate.logs = log.split("\n")
+                    pageDate.showLoadingPage = false
+                })
+            },
+
+            goHome: function () {
+                window.location.replace("/");
+            }
+        }
     })
 
-    apiGetV2rayLog(function (log){
+    apiGetConnLog(function (log){
         log = log.trim()
         pageDate.logs = log.split("\n")
         pageDate.showLoadingPage = false
     })
+
+
 
 </script>
 </html>
