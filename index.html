@@ -185,7 +185,7 @@
                                     </div>
                                     <div class="mdui-card-actions">
                                         <button class="mdui-btn mdui-ripple mdui-color-blue mdui-text-color-white" v-on:click="showSubAddress(index)">地址查看</button>
-                                        <button class="mdui-btn mdui-ripple mdui-color-blue mdui-text-color-white">订阅更新</button>
+                                        <button class="mdui-btn mdui-ripple mdui-color-blue mdui-text-color-white" v-on:click="updateSub(index)">订阅更新</button>
                                     </div>
                                 </div>
                             </div>
@@ -212,7 +212,7 @@
 
                                     </div>
                                     <div class="mdui-card-actions">
-                                        <button class="mdui-btn mdui-ripple mdui-color-blue mdui-text-color-white">选用</button>
+                                        <button class="mdui-btn mdui-ripple mdui-color-blue mdui-text-color-white" v-on:click="selectServer(index)">选用</button>
                                         <button class="mdui-btn mdui-ripple mdui-color-blue mdui-text-color-white">测速</button>
                                     </div>
                                 </div>
@@ -315,7 +315,7 @@
             },
 
             showSubAddress: function (index) {
-                console.log("查看订阅地址: index" + index)
+                console.log("查看订阅地址: index " + index + ", " + pageDate.subList[index])
                 mdui.dialog({
                     title: '订阅地址',
                     content: `
@@ -332,6 +332,43 @@
                 });
             },
 
+            // 订阅更新
+            updateSub: function (index) {
+                console.log("更新订阅地址: index " + index + ", " + pageDate.subList[index])
+                let cbAfterStop = function () {
+                    apiUpdateSub(function () {
+                        mdui.alert('服务重新订阅成功', '服务控制', function(){
+                            console.log("重新载入页面")
+                            reloadPage()
+                        });
+                    })
+                }
+                apiConnStop(function () {
+                    console.log("服务停止成功")
+                    // 先停止服务，再重新订阅服务
+                    cbAfterStop()
+                })
+            },
+
+            // 选用某个节点
+            selectServer: function (index) {
+                console.log("选用节点: index " + index + ", " + pageDate.serverList[index])
+                let cbAfterStop = function () {
+                    apiServersSet(index, function () {
+                        mdui.alert('重选节点成功', '服务控制', function(){
+                            console.log("重新载入页面")
+                            reloadPage()
+                        });
+                    })
+                }
+                apiConnStop(function () {
+                    console.log("服务停止成功")
+                    // 先停止服务，再重新订阅服务
+                    cbAfterStop()
+                })
+            }
+
+            //
 
         }
     })

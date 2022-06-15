@@ -200,6 +200,51 @@ function apiGetSubsList(callback) {
     )
 }
 
+function apiUpdateSub(callback) {
+    getServerHost(function (host){
+            AJAX({
+                url: host + apiStart + "/v2sub/subs/updateAll",
+                method: AJAX_METHOD.GET,
+                success: function (json){
+                    json = JSON.parse(json)
+                    if (json.code === "1000") {
+                        // console.log(json)
+                        callback(json.msg)
+                    } else {
+                        handleErrorJson(json)
+                    }
+                }
+            })
+        },
+        function (){
+            console.log("无法获取服务器地址")
+        }
+    )
+}
+
+function apiServersSet(id, callback) {
+    getServerHost(function (host){
+            AJAX({
+                url: host + apiStart + "/v2sub/ser/set?id=" + id,
+                method: AJAX_METHOD.GET,
+                success: function (json){
+                    json = JSON.parse(json)
+                    if (json.code === "1000") {
+                        // console.log(json)
+                        callback(json.msg)
+                    } else {
+                        handleErrorJson(json)
+                    }
+                }
+            })
+        },
+        function (){
+            console.log("无法获取服务器地址")
+        }
+    )
+}
+
+
 
 // 获取系统服务配置
 function apiGetServerList(callback) {
