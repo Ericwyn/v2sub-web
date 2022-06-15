@@ -484,10 +484,7 @@
                     onClick: function(){
                         let host = document.getElementById("host").value;
                         localStorage.setItem("host", host)
-                        console.log("刷新页面")
-                        setTimeout(function (){
-                            window.location.replace(window.location.origin + window.location.pathname)
-                        }, 200);
+                        loadMsg()
                     }
                 }
             ]
